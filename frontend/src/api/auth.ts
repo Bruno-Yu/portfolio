@@ -121,9 +121,16 @@ export const adminApi = {
 
 // Helper to get API base URL (Vite proxy handles /api prefix)
 export function getApiBaseUrl(): string {
-  return import.meta.env.DEV
-    ? import.meta.env.VITE_API_PREFIX || 'http://localhost:8787'
-    : import.meta.env.VITE_API_PREFIX || 'https://bruno-portfolio-api.YOUR_USERNAME.workers.dev';
+  const apiPrefix = import.meta.env.VITE_API_PREFIX
+  if (apiPrefix) {
+    return apiPrefix
+  }
+  // Fallback to localhost for development
+  if (import.meta.env.DEV) {
+    return 'http://localhost:8787'
+  }
+  // Production fallback - should be set in environment variables
+  return ''
 }
 
 export default {

@@ -25,6 +25,7 @@ export function getApiBaseUrl(): string {
   if (import.meta.env.DEV) {
     return 'http://localhost:8787'
   }
-  return 'https://bruno-portfolio-api.YOUR_USERNAME.workers.dev'
+  // Production - must be set in environment variables
+  return ''
 }
 
