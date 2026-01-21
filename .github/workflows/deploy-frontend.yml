@@ -37,6 +37,11 @@ jobs:
       - name: Build
         run: pnpm run build
         working-directory: ./frontend
+        env:
+          VITE_API_PREFIX: ${{ secrets.VITE_API_PREFIX }}
+          VITE_SYSTEM_NAME: Bruno Portfolio
+          VITE_BASE_PATH: /
+          VITE_REPO_NAME: portfolio
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
