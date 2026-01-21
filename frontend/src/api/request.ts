@@ -50,9 +50,7 @@ class CustomFetchWrapper {
 }
 
 const apiService = new CustomFetchWrapper({
-  baseURL: import.meta.env.DEV
-    ? `${import.meta.env.VITE_API_PREFIX}`
-    : `${import.meta.env.VITE_APP_API}`,
+  baseURL: import.meta.env.VITE_API_PREFIX || '',
   headers: { 'Content-Type': 'application/json' },
 })
 
