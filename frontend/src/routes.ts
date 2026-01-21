@@ -13,7 +13,6 @@ const BASE_URL = import.meta.env.BASE_URL
 export const frontRoutes = [
   {
     path: BASE_URL,
-    exact: true,
     key: 'home',
     name: 'Home',
     element: Home,
@@ -21,23 +20,13 @@ export const frontRoutes = [
   },
   {
     path: `${BASE_URL}works`,
-    exact: true,
     key: 'works',
     name: 'Works',
     element: Works,
     title: '作品集',
   },
   {
-    path: 'https://bruno-yu.github.io/bruno_blog/',
-    exact: true,
-    key: 'blog',
-    name: 'Blog',
-    element: Home,
-    title: '部落格',
-  },
-  {
     path: `${BASE_URL}login`,
-    exact: true,
     key: 'login',
     name: 'Login',
     element: Login,
@@ -55,7 +44,6 @@ export const frontRoutes = [
 export const backRoutes = [
   {
     path: `${BASE_URL}contents`,
-    exact: true,
     key: 'contents',
     name: 'Contents',
     element: Contents,
@@ -64,7 +52,6 @@ export const backRoutes = [
   },
   {
     path: `${BASE_URL}skills`,
-    exact: true,
     key: 'skills',
     name: 'Skills',
     element: Skills,
@@ -73,7 +60,6 @@ export const backRoutes = [
   },
   {
     path: `${BASE_URL}users`,
-    exact: true,
     key: 'users',
     name: 'Users',
     element: Users,
