@@ -1,0 +1,26 @@
+name = "bruno-portfolio-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Database binding - set CLOUDFLARE_D1_DATABASE_ID via environment variable or wrangler secret
+# DO NOT commit the actual database_id to version control
+[[d1_databases]]
+binding = "DB"
+database_name = "bruno-portfolio-db"
+database_id = "${CLOUDFLARE_D1_DATABASE_ID}"
+
+# Routes (uncomment and configure for custom domain)
+# [[routes]]
+# pattern = "api.your-domain.com/*"
+# zone_name = "your-domain.com"
+
+# Environment variables (non-sensitive only)
+# [vars]
+# ENVIRONMENT = "development"
+
+# Secrets (set via: npx wrangler secret put <name>)
+# DO NOT commit credentials here
+# Examples:
+# npx wrangler secret put ADMIN_API_KEY
+# npx wrangler secret put JWT_SECRET

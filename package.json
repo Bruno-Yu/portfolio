@@ -1,0 +1,19 @@
+{
+  "name": "bruno-portfolio",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter frontend dev & pnpm --filter workers dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:workers": "pnpm --filter workers dev",
+    "build": "pnpm run build --filter frontend --filter workers",
+    "test": "pnpm run test --filter frontend --filter workers",
+    "install:all": "pnpm install && pnpm --filter frontend install && pnpm --filter workers install"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

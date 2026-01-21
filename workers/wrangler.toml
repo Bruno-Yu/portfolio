@@ -1,0 +1,13 @@
+name = "bruno-portfolio-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Database binding - database_id is not sensitive (public identifier)
+[[d1_databases]]
+binding = "DB"
+database_name = "bruno-portfolio-db"
+database_id = "060320c9-4fa0-4511-affa-b02d21c6d128"
+
+[vars]
+ENVIRONMENT = "development"

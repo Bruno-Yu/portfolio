@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/avatar.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/svg+xml" href="/avatar.svg" />
+    <link rel="bookmark" href="/portfolio/avatar.svg" type="image/svg+xml" />
+    <meta name="description" content=" Bruno Yu 作品展示" />
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:site" content="Bruno portfolio" />
+    <meta property="twitter:title" content="Bruno Yu 作品展示" />
+    <meta
+      property="twitter:description"
+      content="以React為核心框架，利用Redux管理狀態，並搭配Flowbite構建網站的UI設計，API 則是用 JSON Server 對接資料，旨在展示作品集的同時熟練技術。 "
+    />
+    <meta property="og:title" content="Bruno Yu 作品展示" />
+    <meta
+      property="og:description"
+      content="以React為核心框架，利用Redux管理狀態，並搭配Flowbite構建網站的UI設計，API 則是用 JSON Server 對接資料，旨在展示作品集的同時熟練技術。 "
+    />
+    <meta
+      property="og:url"
+      content="https://github.com/Bruno-Yu/portfolio"
+    />
+    <meta property="og:image" content="https://i.imgur.com/WMejxmI.png" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bruno Yu 作品展示" />
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script checks to see if a redirect is present in the query string,
+      // converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be waiting in the browser's history for
+      // the single page app to route accordingly.
+      ;(function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          )
+        }
+      })(window.location)
+    </script>
+    <title>Bruno Yu 作品集</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="dialog"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
