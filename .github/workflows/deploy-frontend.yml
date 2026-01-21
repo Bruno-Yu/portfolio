@@ -38,7 +38,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: bruno-portfolio
+          projectName: portfolio
           directory: ./frontend/dist
           # Optional: Add these if you need them
           # gitHubToken: ${{ secrets.GITHUB_TOKEN }}
