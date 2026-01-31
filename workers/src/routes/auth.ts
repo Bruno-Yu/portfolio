@@ -10,11 +10,22 @@ import {
   validateEnvAdmin,
   updateLastLogin,
   hashToken,
+  verifyToken,
 } from '../services/auth.js';
 import { authMiddleware } from '../middleware/auth.js';
 import type { D1Database } from '@cloudflare/workers-types';
+import type { TokenPayload } from '../services/auth.js';
 
-const router = new Hono<{ Bindings: { DB: D1Database } }>();
+const router = new Hono<{
+  Bindings: {
+    DB: D1Database;
+    ADMIN_USERNAME?: string;
+    ADMIN_PASSWORD?: string;
+  };
+  Variables: {
+    user?: TokenPayload;
+  };
+}>();
 
 // Login schema
 const loginSchema = z.object({
@@ -98,8 +109,9 @@ router.post('/login', async (c) => {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   await storeRefreshToken(c.env, user.id, tokenHash, expiresAt);
 
-  // Update last login
-  await updateLastLogin(c.env, user.id);
+  if (user.id !== 0) {
+    await updateLastLogin(c.env, user.id);
+  }
 
   c.header('Set-Cookie', `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=604800`);
 
@@ -135,7 +147,7 @@ router.post('/refresh', async (c) => {
   }
 
   // Check if refresh token is valid in database (skip for env admin)
-  if (payload.sub !== 0) {
+  if (payload.sub !== '0') {
     const tokenHash = hashToken(refreshToken);
     const isValid = await isRefreshTokenValid(c.env, tokenHash);
 
@@ -152,7 +164,7 @@ router.post('/refresh', async (c) => {
 
   // Generate new access token
   const accessToken = await generateAccessToken({
-    id: payload.sub,
+    id: Number(payload.sub),
     username: payload.username,
     role: payload.role,
   });

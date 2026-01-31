@@ -11,7 +11,8 @@ import {
 } from 'flowbite-react'
 import type { FC } from 'react'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import apiService from '@/api/request'
+import type { User } from '@/api/auth'
 import {
   HiPlus,
   HiTrash,
@@ -21,21 +22,16 @@ import {
   HiCalendar,
   HiOutlineExclamationCircle,
 } from 'react-icons/hi'
-import { useAuth } from '@/store/auth-hook'
-import { adminApi, type User } from '@/api/auth'
 
 const UsersManagementPage: FC = function () {
-  const navigate = useNavigate()
-  const { accessToken, logout } = useAuth()
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
   const fetchUsers = async () => {
-    if (!accessToken) return
     try {
-      const response = await adminApi.getUsers(accessToken)
+      const response = await apiService.get('/api/admin/users')
       if (response.success && response.data) {
         setUsers(response.data.users)
       } else {
@@ -50,7 +46,7 @@ const UsersManagementPage: FC = function () {
 
   useEffect(() => {
     fetchUsers()
-  }, [accessToken])
+  }, [])
 
   return (
     <>
@@ -174,7 +170,6 @@ const UserCard: FC<{ user: User; onDeleted: () => void }> = function ({ user }) 
 }
 
 const AddUserModal: FC<{ onUserAdded: () => void }> = function ({ onUserAdded }) {
-  const { accessToken } = useAuth()
   const [isOpen, setOpen] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -183,10 +178,13 @@ const AddUserModal: FC<{ onUserAdded: () => void }> = function ({ onUserAdded })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!accessToken) return
 
     try {
-      const response = await adminApi.createUser(accessToken, username, password, role)
+      const response = await apiService.post('/api/admin/users', {
+        username,
+        password,
+        role
+      })
       if (response.success) {
         setOpen(false)
         setUsername('')
@@ -276,15 +274,16 @@ const DeleteUserModal: FC<{ userId: number; username: string; onDeleted?: () => 
   username,
   onDeleted = () => { },
 }) {
-  const { accessToken } = useAuth()
   const [isOpen, setOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (!accessToken) return
     setDeleting(true)
     try {
-      const response = await adminApi.deleteUser(accessToken, userId)
+      const response = await apiService.request({
+        url: `/api/admin/users/${userId}`,
+        method: 'DELETE'
+      })
       if (response.success) {
         setOpen(false)
         onDeleted()

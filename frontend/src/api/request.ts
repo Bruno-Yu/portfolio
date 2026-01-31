@@ -22,6 +22,19 @@ class CustomFetchWrapper {
   async request(config) {
     const { url, method, params, data, headers } = config
 
+    const authStateStr = localStorage.getItem('authState')
+    let authHeaders = {}
+    if (authStateStr) {
+      try {
+        const authState = JSON.parse(authStateStr)
+        if (authState.accessToken) {
+          authHeaders = { 'Authorization': `Bearer ${authState.accessToken}` }
+        }
+      } catch (e) {
+        console.error('Failed to parse authState from localStorage', e)
+      }
+    }
+
     let fullURL = `${this.baseURL}${url}`
     if (params) {
       fullURL += `?${this.serializeParams(params)}`
@@ -29,7 +42,7 @@ class CustomFetchWrapper {
 
     const response = await fetch(fullURL, {
       method,
-      headers: { ...this.headers, ...headers },
+      headers: { ...this.headers, ...authHeaders, ...headers },
       body: data ? JSON.stringify(data) : undefined,
     })
 

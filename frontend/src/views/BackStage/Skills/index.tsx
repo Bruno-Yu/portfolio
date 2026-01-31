@@ -11,15 +11,9 @@ import {
 } from 'flowbite-react'
 import type { FC } from 'react'
 import { useState, useEffect } from 'react'
-import {
-  HiPlus,
-  HiPencilAlt,
-  HiTrash,
-  HiOutlineCode,
-  HiSparkles,
-} from 'react-icons/hi'
+import { HiPlus, HiPencilAlt, HiTrash, HiOutlineCode, HiSparkles } from 'react-icons/hi'
 import { useAuth } from '@/store/auth-hook'
-import { getApiBaseUrl } from '@/api/auth'
+import apiService from '@/api/request'
 
 interface Skill {
   id: number
@@ -38,8 +32,7 @@ const SkillsManagementPage: FC = function () {
 
   const fetchSkills = async () => {
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/skills`)
-      const data = await response.json()
+      const data = await apiService.get('/api/skills')
       if (data.success && data.data) {
         setSkills(data.data)
       }
@@ -217,21 +210,14 @@ const AddSkillModal: FC<{ onSkillAdded: () => void }> = function ({ onSkillAdded
     const detailsArray = details.split(',').map((d: string) => d.trim()).filter(Boolean)
 
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/skills`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          title,
-          icon,
-          details: JSON.stringify(detailsArray),
-          order: parseInt(order) || 0,
-        }),
+      const data = await apiService.post('/api/skills', {
+        title,
+        icon,
+        details: detailsArray,
+        order: parseInt(order) || 0,
       })
 
-      if (response.ok) {
+      if (data.success) {
         setOpen(false)
         setTitle('')
         setDetails('')
@@ -341,38 +327,39 @@ const EditSkillModal: FC<{
   const { accessToken } = useAuth()
   const [title, setTitle] = useState(skill.title)
   const [icon, setIcon] = useState(skill.icon)
-  const [details, setDetails] = useState(() => {
-    try {
-      return JSON.parse(skill.details).join(', ')
-    } catch {
-      return ''
+  const parseDetails = (val: any) => {
+    if (Array.isArray(val)) return val.join(', ')
+    if (typeof val === 'string') {
+      try {
+        return JSON.parse(val).join(', ')
+      } catch {
+        return ''
+      }
     }
-  })
+    return ''
+  }
+  const [details, setDetails] = useState(() => parseDetails(skill.details))
   const [order, setOrder] = useState(String(skill.order))
   const [error, setError] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const handleUpdate = async () => {
-    if (!accessToken) return
 
     const detailsArray = details.split(',').map((d: string) => d.trim()).filter(Boolean)
 
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/skills/${skill.id}`, {
+      const data = await apiService.request({
+        url: `/api/skills/${skill.id}`,
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
+        data: {
           title,
           icon,
-          details: JSON.stringify(detailsArray),
+          details: detailsArray,
           order: parseInt(order) || 0,
-        }),
+        }
       })
 
-      if (response.ok) {
+      if (data.success) {
         onUpdated()
         onClose()
       } else {
@@ -388,14 +375,12 @@ const EditSkillModal: FC<{
 
     setDeleting(true)
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/skills/${skill.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
+      const data = await apiService.request({
+        url: `/api/skills/${skill.id}`,
+        method: 'DELETE'
       })
 
-      if (response.ok) {
+      if (data.success) {
         onUpdated()
         onClose()
       } else {

@@ -37,7 +37,7 @@ function Banner() {
               {selfContent && selfContent.about}
             </p>
             <p className="text-[#C1C1C1] text-center sm:text-left text-xs mb-5">
-              {selfContent && selfContent.hashTags && JSON.parse(selfContent.hashTags).join(' / ')}
+              {selfContent && selfContent.hashTags && (Array.isArray(selfContent.hashTags) ? selfContent.hashTags.join(' / ') : '')}
             </p>
             <div className="flex justify-center sm:justify-start gap-3">
               {socialMedia &&

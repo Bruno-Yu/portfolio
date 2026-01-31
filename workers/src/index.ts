@@ -63,33 +63,7 @@ app.route('/api/auth', authRoutes);
 // Admin routes (protected)
 app.route('/api/admin', adminRoutes);
 
-// Protected routes - apply auth middleware to write operations
-const protectedRoutes = new Hono<{ Bindings: Bindings }>();
-protectedRoutes.use('/*', authMiddleware);
-
-// Apply auth to works write operations
-protectedRoutes.post('/works', async (c) => worksRoutes.fetch(c));
-protectedRoutes.put('/works/:id', async (c) => worksRoutes.fetch(c));
-protectedRoutes.delete('/works/:id', async (c) => worksRoutes.fetch(c));
-
-// Apply auth to skills write operations
-protectedRoutes.post('/skills', async (c) => skillsRoutes.fetch(c));
-protectedRoutes.put('/skills/:id', async (c) => skillsRoutes.fetch(c));
-protectedRoutes.delete('/skills/:id', async (c) => skillsRoutes.fetch(c));
-
-// Apply auth to social-media write operations
-protectedRoutes.post('/social-media', async (c) => socialRoutes.fetch(c));
-protectedRoutes.put('/social-media/:id', async (c) => socialRoutes.fetch(c));
-protectedRoutes.delete('/social-media/:id', async (c) => socialRoutes.fetch(c));
-
-// Apply auth to self-content write operations
-protectedRoutes.post('/self-content', async (c) => selfRoutes.fetch(c));
-protectedRoutes.put('/self-content', async (c) => selfRoutes.fetch(c));
-
-// Mount protected routes under /api
-app.route('/api', protectedRoutes);
-
-// Public routes (GET only)
+// Public routes
 app.route('/api/works', worksRoutes);
 app.route('/api/skills', skillsRoutes);
 app.route('/api/social-media', socialRoutes);

@@ -35,8 +35,8 @@ router.get('/users', async (c) => {
     data: {
       users: users.map(u => ({
         ...u,
-        createdAt: u.createdAt ? new Date(u.createdAt * 1000).toISOString() : null,
-        lastLoginAt: u.lastLoginAt ? new Date(u.lastLoginAt * 1000).toISOString() : null,
+        createdAt: u.createdAt ? u.createdAt.toISOString() : null,
+        lastLoginAt: u.lastLoginAt ? u.lastLoginAt.toISOString() : null,
       })),
     },
   });

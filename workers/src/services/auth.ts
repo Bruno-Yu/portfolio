@@ -14,7 +14,7 @@ const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
 export interface TokenPayload extends JWTPayload {
-  sub: number;
+  sub: string;
   username: string;
   role: string;
   type: 'access' | 'refresh';
@@ -37,7 +37,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 // JWT utilities
 export async function generateAccessToken(user: Pick<User, 'id' | 'username' | 'role'>): Promise<string> {
   return new SignJWT({
-    sub: user.id,
+    sub: String(user.id),
     username: user.username,
     role: user.role,
     type: 'access',
@@ -50,7 +50,7 @@ export async function generateAccessToken(user: Pick<User, 'id' | 'username' | '
 
 export async function generateRefreshToken(userId: number): Promise<string> {
   return new SignJWT({
-    sub: userId,
+    sub: String(userId),
     type: 'refresh',
   })
     .setProtectedHeader({ alg: 'HS256' })

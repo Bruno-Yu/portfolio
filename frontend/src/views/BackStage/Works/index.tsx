@@ -12,15 +12,8 @@ import {
 } from 'flowbite-react'
 import type { FC } from 'react'
 import { useState, useEffect } from 'react'
-import {
-  HiPlus,
-  HiPencilAlt,
-  HiTrash,
-  HiExternalLink,
-  HiCode,
-  HiSparkles,
-} from 'react-icons/hi'
-import { getApiBaseUrl } from '@/api/auth'
+import { HiPlus, HiPencilAlt, HiTrash, HiExternalLink, HiCode, HiSparkles } from 'react-icons/hi'
+import apiService from '@/api/request'
 
 // Helper function to get image URL - handles both local assets and external URLs
 function getImageUrl(url: string | null | undefined): string {
@@ -54,8 +47,7 @@ const WorksManagementPage: FC = function () {
 
   const fetchWorks = async () => {
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/works`)
-      const data = await response.json()
+      const data = await apiService.get('/api/works')
       if (data.success && data.data) {
         setWorks(data.data)
       }
@@ -251,21 +243,17 @@ const AddWorkModal: FC<{ onWorkAdded: () => void }> = function ({ onWorkAdded })
     const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean)
 
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/works`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          description,
-          content,
-          tags: JSON.stringify(tagsArray),
-          imgUrl: imgUrl || null,
-          gitHubUrl: gitHubUrl || null,
-          gitPageUrl: gitPageUrl || null,
-        }),
+      const data = await apiService.post('/api/works', {
+        title,
+        description,
+        content,
+        tags: tagsArray,
+        imgUrl: imgUrl || null,
+        gitHubUrl: gitHubUrl || null,
+        gitPageUrl: gitPageUrl || null,
       })
 
-      if (response.ok) {
+      if (data.success) {
         setOpen(false)
         setTitle('')
         setDescription('')
@@ -424,21 +412,21 @@ const EditWorkModal: FC<{ work: Work; onClose: () => void; onUpdated: () => void
     const tagsArray = tags.split(',').map((t: string) => t.trim()).filter(Boolean)
 
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/works/${work.id}`, {
+      const data = await apiService.request({
+        url: `/api/works/${work.id}`,
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        data: {
           title,
           description,
           content,
-          tags: JSON.stringify(tagsArray),
+          tags: tagsArray,
           imgUrl: imgUrl || null,
           gitHubUrl: gitHubUrl || null,
           gitPageUrl: gitPageUrl || null,
-        }),
+        }
       })
 
-      if (response.ok) {
+      if (data.success) {
         onUpdated()
         onClose()
       } else {
@@ -454,11 +442,12 @@ const EditWorkModal: FC<{ work: Work; onClose: () => void; onUpdated: () => void
 
     setDeleting(true)
     try {
-      const response = await fetch(`${getApiBaseUrl()}/api/works/${work.id}`, {
-        method: 'DELETE',
+      const data = await apiService.request({
+        url: `/api/works/${work.id}`,
+        method: 'DELETE'
       })
 
-      if (response.ok) {
+      if (data.success) {
         onUpdated()
         onClose()
       } else {

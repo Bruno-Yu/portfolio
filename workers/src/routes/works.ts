@@ -4,6 +4,8 @@ import { works } from '../drizzle/schema/index.ts';
 import { eq, desc, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import type { D1Database } from '@cloudflare/workers-types';
+import { requireAdmin, authMiddleware } from '../middleware/auth.js';
+import type { TokenPayload } from '../services/auth.js';
 
 const createWorkSchema = z.object({
   title: z.string().min(1).max(255),
@@ -27,7 +29,15 @@ type Bindings = {
   DB: D1Database;
 };
 
-const router = new Hono<{ Bindings: Bindings }>();
+const router = new Hono<{
+  Bindings: Bindings;
+  Variables: {
+    user?: TokenPayload;
+  };
+}>();
+
+// Apply auth middleware to all routes in this router to set c.set('user', payload)
+router.use('/*', authMiddleware);
 
 router.get('/', async (c) => {
   const db = getDb(c.env);
@@ -91,6 +101,14 @@ router.get('/:id', async (c) => {
 });
 
 router.post('/', async (c) => {
+  const authCheck = requireAdmin(c);
+  if (!authCheck.valid) {
+    return c.json({
+      success: false,
+      error: authCheck.error,
+    }, authCheck.error?.code === 'FORBIDDEN' ? 403 : 401);
+  }
+
   const db = getDb(c.env);
   const body = await c.req.json();
   const validated = createWorkSchema.parse(body);
@@ -110,6 +128,14 @@ router.post('/', async (c) => {
 });
 
 router.put('/:id', async (c) => {
+  const authCheck = requireAdmin(c);
+  if (!authCheck.valid) {
+    return c.json({
+      success: false,
+      error: authCheck.error,
+    }, authCheck.error?.code === 'FORBIDDEN' ? 403 : 401);
+  }
+
   const db = getDb(c.env);
   const id = parseInt(c.req.param('id'));
 
@@ -145,6 +171,14 @@ router.put('/:id', async (c) => {
 });
 
 router.delete('/:id', async (c) => {
+  const authCheck = requireAdmin(c);
+  if (!authCheck.valid) {
+    return c.json({
+      success: false,
+      error: authCheck.error,
+    }, authCheck.error?.code === 'FORBIDDEN' ? 403 : 401);
+  }
+
   const db = getDb(c.env);
   const id = parseInt(c.req.param('id'));
 

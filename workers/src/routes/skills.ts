@@ -4,25 +4,30 @@ import { skills } from '../drizzle/schema/index.ts';
 import { eq, asc } from 'drizzle-orm';
 import { z } from 'zod';
 import type { D1Database } from '@cloudflare/workers-types';
-import { requireAdmin } from '../middleware/auth.js';
+import { requireAdmin, authMiddleware } from '../middleware/auth.js';
+import type { TokenPayload } from '../services/auth.js';
 
 type Bindings = {
   DB: D1Database;
 };
 
+const router = new Hono<{
+  Bindings: Bindings;
+  Variables: {
+    user?: TokenPayload;
+  };
+}>();
+
+router.use('/*', authMiddleware);
+
 const createSkillSchema = z.object({
   title: z.string().min(1).max(100),
-  icon: z.string().optional().nullable(),
-  details: z.array(z.object({
-    title: z.string(),
-    content: z.string(),
-  })).optional(),
+  icon: z.string().min(1),
+  details: z.array(z.string()).default([]),
   order: z.number().int().optional().default(0),
 });
 
 const updateSkillSchema = createSkillSchema.partial();
-
-const router = new Hono<{ Bindings: Bindings }>();
 
 router.get('/', async (c) => {
   const db = getDb(c.env);
@@ -72,8 +77,8 @@ router.post('/', async (c) => {
 
   const skill = await db.insert(skills).values({
     title: validated.title,
-    icon: validated.icon ?? null,
-    details: validated.details ? JSON.stringify(validated.details) : null,
+    icon: validated.icon,
+    details: JSON.stringify(validated.details),
     order: validated.order,
   }).returning().get();
 
