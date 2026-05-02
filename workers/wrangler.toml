@@ -9,5 +9,9 @@ binding = "DB"
 database_name = "bruno-portfolio-db"
 database_id = "060320c9-4fa0-4511-affa-b02d21c6d128"
 
+[[r2_buckets]]
+binding = "IMAGES_BUCKET"
+bucket_name = "portfolio-images"
+
 [vars]
 ENVIRONMENT = "development"

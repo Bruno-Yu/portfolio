@@ -7,10 +7,12 @@ import { selfRoutes } from './routes/self';
 import { authRoutes } from './routes/auth';
 import { adminRoutes } from './routes/admin';
 import { authMiddleware } from './middleware/auth';
-import type { D1Database } from '@cloudflare/workers-types';
+import type { D1Database, R2Bucket } from '@cloudflare/workers-types';
+import { uploadRoutes } from './routes/upload';
 
 type Bindings = {
   DB: D1Database;
+  IMAGES_BUCKET: R2Bucket;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -62,6 +64,9 @@ app.route('/api/auth', authRoutes);
 
 // Admin routes (protected)
 app.route('/api/admin', adminRoutes);
+
+// Upload routes (admin-protected image storage)
+app.route('/api/upload', uploadRoutes);
 
 // Public routes
 app.route('/api/works', worksRoutes);
