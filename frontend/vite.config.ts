@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.VITE_API_PREFIX,
+          target: env.VITE_API_TARGET || env.VITE_API_PREFIX || 'http://localhost:8787',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          // Keep /api prefix — production API expects /api/works, /api/skills etc.
         },
       },
     },

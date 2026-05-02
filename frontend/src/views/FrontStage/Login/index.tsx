@@ -1,95 +1,137 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import { Button, Card, Label, TextInput, Alert } from 'flowbite-react';
-import type { FC } from 'react';
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/store/auth-hook';
-import { getImageUrl } from '@/utils/index';
-import { getBaseUrl } from '@/config';
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import type { RootState } from '@/store/index'
+import { useAuth } from '@/store/auth-hook'
+import { getBaseUrl } from '@/config'
 
-const SignInPage: FC = function () {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+export default function LoginPage() {
+  const lang = useSelector((state: RootState) => state.ui.lang)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const baseUrl = getBaseUrl()
-  const from = location.state?.from?.pathname || `${baseUrl}contents`;
+  const from = location.state?.from?.pathname || `${baseUrl}contents`
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
 
-    const result = await login(username, password);
+    const result = await login(username, password)
 
     if (result.success) {
-      navigate(from, { replace: true });
+      navigate(from, { replace: true })
     } else {
-      setError(result.error || '登入失敗');
+      setError(
+        lang === 'en'
+          ? result.error || 'Wrong username or password.'
+          : result.error || '帳號或密碼錯誤。',
+      )
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
-    <div className="flex flex-col items-center pt-24 xl:pt-36 px-6 lg:h-screen lg:gap-y-12">
-      <Card
-        horizontal
-        imgSrc={getImageUrl('article-image6')}
-        imgAlt=""
-        className="w-[80%] max-w-[1000px] md:max-w-screen [&>img]:hidden md:[&>img]:w-80 md:[&>img]:p-0 md:[&>*]:w-full md:[&>*]:p-16 lg:[&>img]:block"
-      >
-        <h1 className="mb-3 text-2xl font-bold dark:text-white md:text-3xl">
-          登入
-        </h1>
+    <div className="login-shell">
+      {/* Left art panel */}
+      <aside className="login-shell__art">
+        <a
+          href="/"
+          className="login-shell__brand"
+          onClick={(e) => { e.preventDefault(); navigate('/') }}
+        >
+          Bruno Yu
+        </a>
 
-        {error && (
-          <Alert color="failure" className="mb-4">
-            {error}
-          </Alert>
-        )}
+        <img
+          src="/images/stamp.webp"
+          alt=""
+          className="login-shell__art-stamp"
+        />
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4 flex flex-col gap-y-3">
-            <Label htmlFor="username">帳號</Label>
-            <TextInput
-              id="username"
-              name="username"
-              placeholder="請輸入帳號"
+        <div className="login-shell__intro">
+          <h1>{lang === 'en' ? 'BackStage' : '後台管理'}</h1>
+          <p>
+            {lang === 'en'
+              ? 'Manage works, skills, and account settings. Authorised users only.'
+              : '管理作品、技能與帳號設定。僅限管理員登入。'}
+          </p>
+        </div>
+      </aside>
+
+      {/* Right form panel */}
+      <section className="login-shell__form">
+        <form className="login-card" onSubmit={handleSubmit}>
+          <div className="login-card__eyebrow">
+            {lang === 'en' ? 'ADMIN ACCESS' : '後台登入'}
+          </div>
+
+          <h2>{lang === 'en' ? 'Sign in' : '登入'}</h2>
+
+          <p className="login-card__sub">
+            {lang === 'en' ? 'Authorised users only.' : '僅限管理員登入。'}
+          </p>
+
+          {error && (
+            <div className="login-error">{error}</div>
+          )}
+
+          <label className="field">
+            <span className="field__label">
+              {lang === 'en' ? 'Username' : '帳號'}
+            </span>
+            <input
+              type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder={lang === 'en' ? 'admin' : '請輸入帳號'}
+              autoFocus
               required
             />
-          </div>
-          <div className="mb-6 flex flex-col gap-y-3">
-            <Label htmlFor="password">密碼</Label>
-            <TextInput
-              id="password"
-              name="password"
-              placeholder="請輸入密碼"
+          </label>
+
+          <label className="field">
+            <span className="field__label">
+              {lang === 'en' ? 'Password' : '密碼'}
+            </span>
+            <input
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
+              placeholder="••••••••"
               required
             />
-          </div>
-          <div className="mb-6 border">
-            <Button
-              type="submit"
-              className="w-full bg-slate-950"
-              disabled={loading}
+          </label>
+
+          <button
+            className="btn btn-yellow"
+            type="submit"
+            disabled={loading}
+          >
+            {loading
+              ? (lang === 'en' ? 'Signing in…' : '登入中…')
+              : (lang === 'en' ? 'Sign in →' : '登入 →')}
+          </button>
+
+          <div className="login-foot">
+            <a
+              href="/"
+              onClick={(e) => { e.preventDefault(); navigate('/') }}
             >
-              {loading ? '登入中...' : '登入'}
-            </Button>
+              ← {lang === 'en' ? 'Back to site' : '返回首頁'}
+            </a>
+            <span />
           </div>
         </form>
-      </Card>
+      </section>
     </div>
-  );
-};
-
-export default SignInPage;
+  )
+}
