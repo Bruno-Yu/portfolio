@@ -82,3 +82,5 @@ tmp/
 # OpenSpec (optional - if you want to exclude)
 # ===========================================
 # openspec/changes/drafts/
+.spectra/
+openspec/.vector-search.db*
