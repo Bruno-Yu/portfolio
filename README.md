@@ -266,10 +266,6 @@ This project uses a spec-driven workflow:
 4. Verify the result
 5. Archive completed changes after the implementation and docs agree
 
-## Development Note
-
-This project was built with AI-assisted development support. Architecture decisions, requirement breakdown, review, integration, and final verification remain human-owned.
-
 ## License
 
 MIT
