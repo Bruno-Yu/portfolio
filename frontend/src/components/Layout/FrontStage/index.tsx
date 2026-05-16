@@ -1,16 +1,15 @@
-import { Route, Routes } from 'react-router-dom'
-import Menu from './Ｍenu.tsx'
-import Footer from './Footer.tsx'
 import type { FC, PropsWithChildren } from 'react'
+import Rail from './Rail'
 
-const MainContent: FC = function ({ children }) {
+const FrontStageLayout: FC<PropsWithChildren> = function ({ children }) {
   return (
-    <div className="container flex flex-col min-h-screen mx-auto min-[992px] max-w-[1296px]">
-      <Menu />
-      {children}
-      <Footer />
+    <div className="shell">
+      <Rail />
+      <main className="main">
+        {children}
+      </main>
     </div>
   )
 }
 
-export default MainContent
+export default FrontStageLayout

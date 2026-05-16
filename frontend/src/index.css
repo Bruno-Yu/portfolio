@@ -1,7 +1,9 @@
+/* Design system imports must precede @tailwind directives (CSS spec) */
+@import "./styles/design-tokens.css";
+@import "./styles/design-shell.css";
+@import "./styles/design-pages.css";
+@import "./styles/design-admin.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-    font-family: "Noto Sans", sans-serif; 
-}
