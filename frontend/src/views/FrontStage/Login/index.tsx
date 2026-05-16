@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/index'
 import { useAuth } from '@/store/auth-hook'
-import { getBaseUrl } from '@/config'
 
 export default function LoginPage() {
   const lang = useSelector((state: RootState) => state.ui.lang)
@@ -16,8 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const baseUrl = getBaseUrl()
-  const from = location.state?.from?.pathname || `${baseUrl}contents`
+  const from = location.state?.from?.pathname || '/backstage/overview'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,8 +59,8 @@ export default function LoginPage() {
           <h1>{lang === 'en' ? 'BackStage' : '後台管理'}</h1>
           <p>
             {lang === 'en'
-              ? 'Manage works, skills, and account settings. Authorised users only.'
-              : '管理作品、技能與帳號設定。僅限管理員登入。'}
+              ? 'Manage works, skills, messages, analytics, and account settings.'
+              : '管理作品、技能、訊息、流量分析與帳號設定。'}
           </p>
         </div>
       </aside>
@@ -111,6 +109,11 @@ export default function LoginPage() {
             />
           </label>
 
+          <label className="field field--check">
+            <input type="checkbox" defaultChecked />
+            <span>{lang === 'en' ? 'Keep me signed in for 7 days' : '保持登入 7 天'}</span>
+          </label>
+
           <button
             className="btn btn-yellow"
             type="submit"
@@ -128,7 +131,13 @@ export default function LoginPage() {
             >
               ← {lang === 'en' ? 'Back to site' : '返回首頁'}
             </a>
-            <span />
+            <span>{lang === 'en' ? 'Forgot password?' : '忘記密碼？'}</span>
+          </div>
+
+          <div className="login-hint">
+            {lang === 'en'
+              ? 'Use your Cloudflare-backed admin credentials.'
+              : '請使用已設定的後台管理員帳密登入。'}
           </div>
         </form>
       </section>

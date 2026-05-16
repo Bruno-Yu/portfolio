@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/index'
 import { contact, pick } from '@/content/portfolio'
+import ContactGlobe from './ContactGlobe'
 
 export default function ContactSection() {
   const lang = useSelector((state: RootState) => state.ui.lang)
@@ -10,16 +11,20 @@ export default function ContactSection() {
       {/* Stamp watermark — decorative background */}
       <img className="contact__stamp" src="/images/stamp.webp" alt="" aria-hidden="true" />
 
-      <div>
-        <span className="section-num">
-          / 07 — {lang === 'en' ? 'GET IN TOUCH' : '聯繫'}
-        </span>
-        <h2 className="contact__lede" style={{ marginTop: 24 }}>
-          {pick(contact.lede, lang)}
-        </h2>
-        <a href={`mailto:${contact.links[0].href.replace('mailto:', '')}`} className="btn btn-solid">
-          {lang === 'en' ? 'Email me' : '寄信給我'} →
-        </a>
+      <div className="contact__top">
+        <div>
+          <span className="section-num">
+            / 07 — {lang === 'en' ? 'GET IN TOUCH' : '聯繫'}
+          </span>
+          <h2 className="contact__lede" style={{ marginTop: 24 }}>
+            {pick(contact.lede, lang)}
+          </h2>
+          <a href={`mailto:${contact.links[0].href.replace('mailto:', '')}`} className="btn btn-solid">
+            {lang === 'en' ? 'Email me' : '寄信給我'} →
+          </a>
+        </div>
+
+        <ContactGlobe />
       </div>
 
       <ul className="contact__list">

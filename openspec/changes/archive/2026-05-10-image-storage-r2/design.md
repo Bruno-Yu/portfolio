@@ -45,24 +45,25 @@ R2 bucket 啟用 Public Access，綁定自訂網域 `images.jackhellowin.win`（
 
 理由：最簡單的公開存取方式；Cloudflare CDN 自動快取；不需額外 Worker 來 proxy R2 讀取。
 
-### File key format: `<timestamp>-<uuid>.<ext>`
+### File key format: `works/<timestamp>-<random-slug>.<ext>`
 
-範例：`1735000000000-550e8400-e29b-41d4-a716-446655440000.jpg`
+範例：`works/1735000000000-k9z8x7w6v5.jpg`
 
-理由：timestamp 便於排序；UUID 確保唯一性；保留原始 extension 讓 content type 易於辨識。
+理由：`works/` prefix 讓 R2 物件可依功能分組；timestamp 便於排序；短 random slug 對 Admin 上傳量已足夠避免碰撞；保留原始 extension 讓 content type 易於辨識。
 不使用原始檔名（避免特殊字元/路徑注入）。
 
-### imgUrl and imgLink both set to the same R2 URL
+### Preview-first Admin image editing
 
-上傳後，回傳的 URL 同時作為 `imgUrl`（modal 展示）和 `imgLink`（卡片縮圖）的預設值。
-Admin 仍可手動分別設定兩個欄位（向下相容舊 Imgur 連結）。
+上傳後，回傳的 `https://images.jackhellowin.win/<key>` URL 同時作為 `imgUrl`（modal 展示）和 `imgLink`（卡片縮圖）的值。Admin 表單不再直接暴露 URL text input；使用者看到的是現有圖片預覽，點擊替換時預覽區切換為 drag/drop upload target，刪除時清空圖片值。
+
+向下相容策略：舊 Imgur URL 仍可顯示為預覽並可被移除或替換；只有 R2 custom-domain URL 會顯示刪除 R2 物件的能力。
 
 ## Risks / Trade-offs
 
 - [Risk] Worker Free plan 請求數限制（100K req/day）→ Admin 使用頻率極低，不構成風險
 - [Risk] R2 Public bucket 無法細粒度控制存取（任何人可讀）→ portfolio 圖片本為公開內容，可接受
 - [Risk] 上傳大圖（5MB 限制）時 Worker 記憶體壓力 → 在 upload route 明確拒絕超過 5MB 的請求，回傳 413
-- [Risk] 自訂網域 DNS propagation 需時 → 部署初期可暫用 `pub-xxx.r2.dev` 原始 URL
+- [Risk] R2 `pub-xxx.r2.dev` public URL 可能因帳號設定或 public access 狀態回 401 → 生產資料與 Worker response 統一使用 `images.jackhellowin.win` custom domain
 
 ## Migration Plan
 
@@ -71,7 +72,7 @@ Admin 仍可手動分別設定兩個欄位（向下相容舊 Imgur 連結）。
 3. 加 `[[r2_buckets]]` 到 `wrangler.toml` + Env type 更新
 4. 實作並部署 upload route（`wrangler deploy`）
 5. Admin 前端加圖片上傳 UI，部署前端
-6. （選用）在 Cloudflare DNS 加 CNAME `images.jackhellowin.win → pub-xxx.r2.dev`
-7. 舊 Imgur URL 繼續有效（D1 欄位存的是 URL，新舊並存）
+6. 在 Cloudflare DNS / R2 custom domains 綁定 `images.jackhellowin.win`
+7. 將現有 8 張作品圖片轉存 R2，更新 D1 `works.img_url` / `works.img_link` 為 custom-domain URL
 
 Rollback：移除 `[[r2_buckets]]` binding 並重新 deploy，前端恢復手動輸入 URL 即可。

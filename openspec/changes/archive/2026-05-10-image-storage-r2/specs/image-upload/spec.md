@@ -12,13 +12,13 @@ unauthorised requests SHALL be rejected with HTTP 401.
 #### Scenario: Successful image upload
 
 - **WHEN** an admin sends `POST /api/upload` with a valid JWT and a multipart body containing a JPEG, PNG, WebP, or GIF file ≤ 5 MB
-- **THEN** the Worker stores the file in R2 under key `<timestamp>-<uuid>.<ext>`, responds HTTP 200 with `{ "success": true, "url": "<public-url>/<key>" }`, and the file is reachable at that URL
+- **THEN** the Worker stores the file in R2 under key `works/<timestamp>-<random-slug>.<ext>`, responds HTTP 200 with `{ "success": true, "data": { "url": "https://images.jackhellowin.win/<key>", "key": "<key>" } }`, and the file is reachable at that URL
 
 ##### Example: key format
 
-- **GIVEN** upload time is Unix ms `1735000000000`, generated UUID is `550e8400-e29b-41d4-a716-446655440000`, and the file is a JPEG
+- **GIVEN** upload time is Unix ms `1735000000000`, generated random slug is `k9z8x7w6v5`, and the file is a JPEG
 - **WHEN** the Worker generates the storage key
-- **THEN** the key is `1735000000000-550e8400-e29b-41d4-a716-446655440000.jpg`
+- **THEN** the key is `works/1735000000000-k9z8x7w6v5.jpg`
 
 #### Scenario: Request without valid JWT is rejected
 
@@ -28,17 +28,17 @@ unauthorised requests SHALL be rejected with HTTP 401.
 #### Scenario: Non-image MIME type is rejected
 
 - **WHEN** an admin uploads a file whose `Content-Type` does not start with `image/`
-- **THEN** the Worker responds HTTP 400 with `{ "success": false, "error": "Invalid file type" }` and does NOT write to R2
+- **THEN** the Worker responds HTTP 400 with `{ "success": false, "error": { "code": "BAD_REQUEST", "message": "Invalid file type. Allowed: jpg, png, webp, gif" } }` and does NOT write to R2
 
 #### Scenario: File exceeding 5 MB is rejected
 
 - **WHEN** an admin uploads a file larger than 5,242,880 bytes (5 MiB)
-- **THEN** the Worker responds HTTP 413 with `{ "success": false, "error": "File too large" }` and does NOT write to R2
+- **THEN** the Worker responds HTTP 413 with `{ "success": false, "error": { "code": "PAYLOAD_TOO_LARGE", "message": "File too large (max 5 MB)" } }` and does NOT write to R2
 
 #### Scenario: Missing file field is rejected
 
 - **WHEN** an admin sends a multipart request that contains no field named `file`
-- **THEN** the Worker responds HTTP 400 with `{ "success": false, "error": "No file provided" }` and does NOT write to R2
+- **THEN** the Worker responds HTTP 400 with `{ "success": false, "error": { "code": "BAD_REQUEST", "message": "No file provided" } }` and does NOT write to R2
 
 ### Requirement: Uploaded images are publicly accessible via CDN
 

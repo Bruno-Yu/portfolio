@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/index'
-import { experience, pick } from '@/content/portfolio'
+import { pick } from '@/content/portfolio'
+import { useExperiences } from '@/Hooks/useExperiences'
 
 export default function ExperienceSection() {
   const lang = useSelector((state: RootState) => state.ui.lang)
+  const { experiences } = useExperiences()
 
   return (
     <section className="section" id="experience">
@@ -15,7 +17,7 @@ export default function ExperienceSection() {
       </div>
 
       <div className="exp">
-        {experience.map((item, i) => (
+        {experiences.map((item, i) => (
           <div key={i} className="exp__row">
             <div className="exp__period">{item.period}</div>
 

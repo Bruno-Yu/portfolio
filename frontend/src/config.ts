@@ -21,11 +21,19 @@ export function getApiBaseUrl(): string {
   if (apiPrefix) {
     return apiPrefix
   }
-  // Default based on environment
+
+  // Vite dev server proxies /api to the Worker and avoids CORS in development.
   if (import.meta.env.DEV) {
-    return 'http://localhost:8787'
+    return ''
   }
-  // Production - must be set in environment variables
+
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+      return 'http://127.0.0.1:8787'
+    }
+  }
+
+  // Production uses the same origin. Cloudflare routes /api/* to the Worker.
   return ''
 }
-

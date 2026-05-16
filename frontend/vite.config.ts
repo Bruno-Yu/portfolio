@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.VITE_API_TARGET || env.VITE_API_PREFIX || 'http://localhost:8787',
+          target: env.VITE_API_TARGET || env.VITE_API_PREFIX || 'http://127.0.0.1:8787',
           changeOrigin: true,
           // Keep /api prefix — production API expects /api/works, /api/skills etc.
         },

@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from '@/store/index'
 import { setLang, setTheme, type Lang } from '@/store/ui-slice'
-import { IoLogoGithub, IoMailOutline, IoLogoLinkedin, IoGlobeOutline } from 'react-icons/io5'
+import { IoArrowForward, IoGlobeOutline, IoLogoGithub, IoLogoLinkedin, IoMailOutline } from 'react-icons/io5'
 import { meta } from '@/content/portfolio'
 
 interface NavItem {
@@ -19,35 +19,62 @@ const NAV_ITEMS: NavItem[] = [
   { label: { en: 'Contact', zh: '聯繫' }, num: '04', href: '#contact', isAnchor: true },
 ]
 
+function hasValidSession(): boolean {
+  try {
+    const raw = localStorage.getItem('authState')
+    if (!raw) return false
+    const { accessToken, isLogin } = JSON.parse(raw) as { accessToken?: string; isLogin?: boolean }
+    if (!isLogin || !accessToken) return false
+
+    const [, payload] = accessToken.split('.')
+    if (!payload) return false
+    const json = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/'))) as { exp?: number }
+    return !json.exp || json.exp * 1000 > Date.now()
+  } catch {
+    return false
+  }
+}
+
 export default function Rail() {
   const dispatch = useDispatch<AppDispatch>()
-  const { lang, theme } = useSelector((state: RootState) => state.ui)
+  const { lang, theme, activeSection } = useSelector((state: RootState) => state.ui)
   const navigate = useNavigate()
   const location = useLocation()
 
   function handleNavClick(item: NavItem, e: React.MouseEvent) {
     e.preventDefault()
     if (item.isAnchor) {
-      // If not on home page, go home first then scroll
       const id = item.href.replace('#', '')
       if (location.pathname !== '/') {
         navigate('/')
-        // Small delay for navigation
+        // Wait for React Router + DOM render before scrolling
         setTimeout(() => {
           document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-        }, 120)
+        }, 300)
       } else {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
       }
     } else {
-      navigate(item.href)
+      if (item.href === '/' && location.pathname === '/') {
+        // Already on home — scroll back to very top
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        navigate(item.href)
+      }
     }
   }
 
   function isActive(item: NavItem): boolean {
-    if (item.isAnchor) return false
-    if (item.href === '/') return location.pathname === '/'
-    return location.pathname.startsWith(item.href)
+    if (location.pathname !== '/') {
+      // On non-home pages, match by pathname only
+      if (item.href === '/') return false
+      return location.pathname.startsWith(item.href)
+    }
+    // On home page: anchor items use scroll-spy activeSection
+    if (item.isAnchor) return activeSection === item.href
+    // Home item is active when no anchor section is active
+    if (item.href === '/') return !activeSection || activeSection === '/'
+    return false
   }
 
   return (
@@ -58,14 +85,14 @@ export default function Rail() {
           Bruno Yu
         </a>
         <div className="brand-sub">
-          {lang === 'en' ? 'Front-end Developer' : '前端工程師'} · TW
+          {lang === 'en' ? 'Frontend / Full-stack Engineer' : '前端/全端工程師'}
         </div>
       </div>
 
       {/* Status */}
       <div className="rail__status">
         <span className="rail__dot" />
-        {lang === 'en' ? 'Open to work' : '可接案'}
+        {lang === 'en' ? 'Open to conversations' : '歡迎聯繫'}
       </div>
 
       {/* Navigation */}
@@ -148,6 +175,19 @@ export default function Rail() {
           <br />
           {lang === 'en' ? 'Tainan, Taiwan' : '台南，台灣'}
         </div>
+
+        <a
+          href="/login"
+          className="rail__backstage"
+          title="BackStage"
+          onClick={(e) => {
+            e.preventDefault()
+            navigate(hasValidSession() ? '/backstage/overview' : '/login')
+          }}
+        >
+          <IoArrowForward />
+          <span>{lang === 'en' ? 'BackStage' : '後台'}</span>
+        </a>
       </div>
     </aside>
   )

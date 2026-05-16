@@ -1,3 +1,5 @@
+import { getApiBaseUrl } from '@/config'
+
 class CustomFetchWrapper {
   constructor(config) {
     this.baseURL = config.baseURL
@@ -63,7 +65,7 @@ class CustomFetchWrapper {
 }
 
 const apiService = new CustomFetchWrapper({
-  baseURL: import.meta.env.VITE_API_PREFIX || '',
+  baseURL: getApiBaseUrl(),
   headers: { 'Content-Type': 'application/json' },
 })
 

@@ -1,16 +1,17 @@
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/index'
 import { about, pick } from '@/content/portfolio'
+import { usePageContent } from '@/Hooks/usePageContent'
 
-interface AboutSectionProps {
-  /** Optional API-provided about text; falls back to static content */
-  apiAbout?: string
-}
-
-export default function AboutSection({ apiAbout: _ }: AboutSectionProps) {
+export default function AboutSection() {
   const lang = useSelector((state: RootState) => state.ui.lang)
+  const { get } = usePageContent()
 
-  const paragraphs = about.paragraphs[lang]
+  // API override: stored as newline-separated paragraphs; fall back to portfolio.ts
+  const rawAbout = get('about.paragraphs', lang, '')
+  const paragraphs = rawAbout
+    ? rawAbout.split(/\n\n+/).map(s => s.trim()).filter(Boolean)
+    : about.paragraphs[lang]
 
   return (
     <section className="section" id="about">

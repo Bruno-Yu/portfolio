@@ -1,6 +1,11 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
+// Re-export new schema modules
+export { contentBlocks, type ContentBlock, type NewContentBlock } from './contentBlocks.js';
+export { experiences, type Experience, type NewExperience } from './experiences.js';
+export { messages, type Message, type NewMessage } from './messages.js';
+
 // Works table - portfolio projects
 export const works = sqliteTable('works', {
   id: integer('id').primaryKey({ autoIncrement: true }),

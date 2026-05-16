@@ -6,6 +6,10 @@ import { socialRoutes } from './routes/social';
 import { selfRoutes } from './routes/self';
 import { authRoutes } from './routes/auth';
 import { adminRoutes } from './routes/admin';
+import { analyticsRoutes } from './routes/analytics';
+import { contentBlocksRoutes } from './routes/contentBlocks';
+import { experiencesRoutes } from './routes/experiences';
+import { messagesRoutes } from './routes/messages';
 import { authMiddleware } from './middleware/auth';
 import type { D1Database, R2Bucket } from '@cloudflare/workers-types';
 import { uploadRoutes } from './routes/upload';
@@ -13,6 +17,8 @@ import { uploadRoutes } from './routes/upload';
 type Bindings = {
   DB: D1Database;
   IMAGES_BUCKET: R2Bucket;
+  CF_ANALYTICS_API_TOKEN?: string;
+  CF_ZONE_ID?: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -64,6 +70,7 @@ app.route('/api/auth', authRoutes);
 
 // Admin routes (protected)
 app.route('/api/admin', adminRoutes);
+app.route('/api/admin/analytics', analyticsRoutes);
 
 // Upload routes (admin-protected image storage)
 app.route('/api/upload', uploadRoutes);
@@ -73,5 +80,8 @@ app.route('/api/works', worksRoutes);
 app.route('/api/skills', skillsRoutes);
 app.route('/api/social-media', socialRoutes);
 app.route('/api/self-content', selfRoutes);
+app.route('/api/content-blocks', contentBlocksRoutes);
+app.route('/api/experiences', experiencesRoutes);
+app.route('/api/messages', messagesRoutes);
 
 export default app;

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from '@/store/index'
 import { useBlog } from '@/api/blog'
+import { fallbackWorks } from '@/content/apiFallback'
 
 interface Work {
   id: number | string
@@ -36,7 +37,7 @@ export default function WorksPage() {
   const navigate = useNavigate()
   const blogApi = useBlog()
 
-  const [works, setWorks] = useState<Work[]>([])
+  const [works, setWorks] = useState<Work[]>(fallbackWorks)
   const [selected, setSelected] = useState<SelectedWork | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -44,8 +45,8 @@ export default function WorksPage() {
   useEffect(() => {
     async function fetchWorks() {
       const result = await blogApi.queryWorks()
-      if (result.success) {
-        setWorks(result.data || [])
+      if (result.success && result.data?.length) {
+        setWorks(result.data)
         if (result.meta?.pagination) {
           setCurrentPage(result.meta.pagination.currentPage || 1)
           setTotalPages(result.meta.pagination.totalPages || 1)

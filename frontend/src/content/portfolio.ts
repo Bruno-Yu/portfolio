@@ -17,7 +17,7 @@ export const meta = {
   cnName: '余俊毅',
   enName: 'Chin-Yi Yu',
   nick: 'Bruno',
-  role: { en: 'Front-end Developer', zh: '前端工程師' },
+  role: { en: 'Frontend / Full-stack Engineer', zh: '前端/全端工程師' },
   location: { en: 'Tainan, Taiwan', zh: '台南，台灣' },
   email: 'jackhellowin@gmail.com',
   github: 'https://github.com/Bruno-Yu',
@@ -49,7 +49,7 @@ export const home = {
 export const hero = {
   crumb: {
     label: { en: 'PORTFOLIO / 2026', zh: '作品集 / 2026' },
-    avail: { en: 'AVAILABLE · Q3 2026', zh: '可接案 · Q3 2026' },
+    avail: { en: 'OPEN TO CONVERSATIONS · 2026', zh: '歡迎聯繫 · 2026' },
   },
   /**
    * Three rotating headline variants.
@@ -59,12 +59,12 @@ export const hero = {
    */
   variants: [
     {
-      en: ['Frontend engineer', 'building honest', 'interfaces.'],
-      zh: ['打造', '誠實的', '前端介面。'],
-      accentEn: 'honest',
-      accentZh: '前端介面',
+      en: ['Frontend engineer', 'building clear,', 'maintainable interfaces.'],
+      zh: ['打造', '清楚、快', '好維護的介面。'],
+      accentEn: 'maintainable',
+      accentZh: '好維護',
       emWordEn: 'engineer',
-      emWordZh: '誠實的',
+      emWordZh: '清楚、快',
     },
     {
       en: ['3 years.', '12 products.', 'One philosophy.'],
@@ -104,13 +104,13 @@ export const about = {
   paragraphs: {
     en: [
       "I'm a front-end developer based in Tainan. I work mainly with Vue and React, and I'm comfortable reaching into the back end when a project needs it — Node, .NET, or Python / Flask.",
-      "Before software I spent five years in B2B sales in Vietnam. That stretch taught me how to talk to non-technical people without losing them, and how to ship things on a deadline. Both habits carry over.",
-      "I read documentation. I write small, reusable components. I file the boring tickets nobody else wants. If you'd like the long version, my CV has the details.",
+      "Before software I spent five years in B2B sales in Vietnam. That period trained me to communicate requirements in terms non-technical stakeholders can follow, and to ship on deadline. Both habits carry over.",
+      "I read documentation. I write small, reusable components. I take on the under-documented corners and accumulated tech debt that others leave behind. If you'd like the long version, my CV has the details.",
     ],
     zh: [
       '我是住在台南的前端工程師，主力是 Vue 與 React，也能依專案需求接後端（Node、.NET、Python / Flask）。',
-      '進軟體業之前，我在越南做了五年 B2B 業務。那段經歷教我怎麼和非技術人員講話而不掉鏈子、怎麼準時交件 — 這兩個習慣到現在還在用。',
-      '我會讀文件、會把元件拆得乾淨、也願意接別人不想接的瑣事。完整的工作經歷請參考我的履歷。',
+      '進軟體業之前，我在越南做了五年 B2B 業務。那段經歷讓我習慣用非技術人員聽得懂的語言溝通需求、在截止日前交付 — 這兩個習慣到現在還在用。',
+      '我會讀文件、會把元件拆得乾淨、也願意處理文件不完整、技術債累積等別人擱置的工作。完整的工作經歷請參考履歷。',
     ],
   },
   facts: [
@@ -127,8 +127,8 @@ export const about = {
       v: { en: 'TOEIC L+R 940', zh: '多益聽讀 940' },
     },
     {
-      k: { en: 'Open to', zh: '求職方向' },
-      v: { en: 'Front-end / Full-stack roles', zh: '前端 / 全端工程師職缺' },
+      k: { en: 'Open to', zh: '歡迎聯繫' },
+      v: { en: 'Future roles / collaborations', zh: '未來職缺 / 合作機會' },
     },
     {
       k: { en: 'Languages', zh: '語言' },
@@ -239,7 +239,7 @@ export const services: ServiceItem[] = [
 export const contact = {
   lede: {
     en: "Let's build something worth using.",
-    zh: '來做點真正有用的東西。',
+    zh: '歡迎談論職缺合作，也可以純粹聊技術。',
   },
   links: [
     {

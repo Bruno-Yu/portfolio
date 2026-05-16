@@ -154,6 +154,7 @@ img, svg { display: block; max-width: 100%; }
 .btn:hover { background: var(--ink); color: var(--bg); }
 .btn.btn-solid { background: var(--ink); color: var(--bg); }
 .btn.btn-solid:hover { background: var(--accent-y); color: var(--ink); border-color: var(--ink); }
+.btn.btn--copied { background: var(--accent-y); color: var(--ink); border-color: var(--ink); cursor: default; pointer-events: none; }
 .btn.btn-yellow { background: var(--accent-y); border-color: var(--ink); color: var(--ink); }
 .btn.btn-yellow:hover { background: var(--ink); color: var(--accent-y); }
 .btn.btn-ghost { border-color: var(--rule-strong); color: var(--ink-2); }

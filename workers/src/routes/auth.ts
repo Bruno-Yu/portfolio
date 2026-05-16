@@ -238,4 +238,51 @@ async function isRefreshTokenValid(env: { DB: D1Database }, tokenHash: string): 
   return !!token;
 }
 
+
+// POST /change-password — requires valid auth token
+router.post('/change-password', async (c) => {
+  const user = c.get('user');
+  if (!user) {
+    return c.json({ success: false, error: { code: 'UNAUTHORIZED' } }, 401);
+  }
+
+  const body = await c.req.json().catch(() => ({}));
+  const { currentPassword, newPassword } = body;
+
+  if (!currentPassword || !newPassword) {
+    return c.json({ success: false, error: { code: 'BAD_REQUEST', message: 'currentPassword and newPassword required' } }, 400);
+  }
+
+  if (newPassword.length < 8) {
+    return c.json({ success: false, error: { code: 'BAD_REQUEST', message: 'Password must be at least 8 characters' } }, 400);
+  }
+
+  const { drizzle } = await import('drizzle-orm/d1');
+  const { users } = await import('../drizzle/schema/index.js');
+  const { eq } = await import('drizzle-orm');
+  const { hashPassword, verifyPassword } = await import('../services/auth.js');
+
+  const db = drizzle(c.env.DB);
+  const userId = Number(user.sub);
+  if (!Number.isInteger(userId)) {
+    return c.json({ success: false, error: { code: 'BAD_REQUEST', message: 'Invalid user id' } }, 400);
+  }
+
+  const dbUser = await db.select().from(users).where(eq(users.id, userId)).get();
+
+  if (!dbUser) {
+    return c.json({ success: false, error: { code: 'NOT_FOUND' } }, 404);
+  }
+
+  const valid = await verifyPassword(currentPassword, dbUser.passwordHash);
+  if (!valid) {
+    return c.json({ success: false, error: { code: 'INVALID_CREDENTIALS', message: 'Current password is incorrect' } }, 401);
+  }
+
+  const hash = await hashPassword(newPassword);
+  await db.update(users).set({ passwordHash: hash }).where(eq(users.id, userId));
+
+  return c.json({ success: true });
+});
+
 export const authRoutes = router;

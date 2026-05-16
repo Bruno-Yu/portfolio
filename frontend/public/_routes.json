@@ -8,5 +8,5 @@
     }
   ],
   "include": ["/*"],
-  "exclude": ["/assets/*", "/*.js", "/*.css", "/*.svg", "/*.png", "/*.jpg", "/*.ico"]
+  "exclude": ["/api/*", "/assets/*", "/*.js", "/*.css", "/*.svg", "/*.png", "/*.jpg", "/*.ico"]
 }

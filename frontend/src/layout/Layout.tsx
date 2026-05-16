@@ -1,46 +1,26 @@
-// import { Children } from 'react'
+// Frontstage layout — wraps all non-backstage routes.
+// All /backstage/* routes are now handled by AdminShell in App.tsx.
 import { Route, Routes } from 'react-router-dom'
 import { FC } from 'react'
-import { frontRoutes, backRoutes } from '../routes.ts'
-import { useSelector } from 'react-redux'
+import { frontRoutes } from '../routes.ts'
 import FrontStageLayout from '@/components/Layout/FrontStage/index.tsx'
-import BackStageLayout from '@/components/Layout/BackStage/index.tsx'
 
-const RouteContent: FC<{ isLogin: boolean }> = function ({ isLogin }) {
-  const routes = isLogin ? backRoutes : frontRoutes
-
+const RouteContent: FC = function () {
   return (
     <Routes>
-      {routes.map((route, idx) => {
-        return (
-          route.element && (
-            <Route
-              key={idx}
-              path={route.path}
-              element={<route.element />}
-            />
-          )
+      {frontRoutes.map((route, idx) => (
+        route.element && (
+          <Route key={idx} path={route.path} element={<route.element />} />
         )
-      })}
-      {/* <Route path="/" element={<Navigate to="home" replace />} /> */}
+      ))}
     </Routes>
   )
 }
 
 export default function () {
-  const isLogin = useSelector((state: { user: { isLogin: boolean } }) => state.user.isLogin)
-
-  if (isLogin) {
-    return (
-      <BackStageLayout isFooter={false}>
-        <RouteContent isLogin={isLogin} />
-      </BackStageLayout>
-    )
-  } else {
-    return (
-      <FrontStageLayout>
-        <RouteContent isLogin={isLogin} />
-      </FrontStageLayout>
-    )
-  }
+  return (
+    <FrontStageLayout>
+      <RouteContent />
+    </FrontStageLayout>
+  )
 }

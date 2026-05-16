@@ -6,6 +6,7 @@ export type Theme = 'light' | 'dark';
 interface UiState {
   lang: Lang;
   theme: Theme;
+  activeSection: string;
 }
 
 function applyTheme(theme: Theme) {
@@ -45,6 +46,7 @@ const uiSlice = createSlice({
   initialState: {
     lang: initialLang,
     theme: initialTheme,
+    activeSection: '',
   } as UiState,
   reducers: {
     setLang(state, action: PayloadAction<Lang>) {
@@ -60,8 +62,11 @@ const uiSlice = createSlice({
       state.theme = next;
       applyTheme(next);
     },
+    setActiveSection(state, action: PayloadAction<string>) {
+      state.activeSection = action.payload;
+    },
   },
 });
 
-export const { setLang, setTheme, toggleTheme } = uiSlice.actions;
+export const { setLang, setTheme, toggleTheme, setActiveSection } = uiSlice.actions;
 export default uiSlice.reducer;
