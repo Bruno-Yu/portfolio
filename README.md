@@ -1,105 +1,117 @@
 # Bruno Portfolio
 
-A full-stack personal portfolio website showcasing attractions and projects, built with modern web technologies.
+Full-stack portfolio project built with **React, TypeScript, Cloudflare Workers, D1, and Drizzle ORM**.
 
-## 🏗️ Architecture
+This project is more than a static personal site: it combines a modern front end, a serverless backend, existing-data migration, and a spec-driven development workflow in one codebase.  
+It demonstrates end-to-end product delivery across UI, API, persistence, and deployment.
 
-```
+## Live demo
+
+- Portfolio: https://portfolio.jackhellowin.win/
+
+## What this project demonstrates
+
+- Full-stack product delivery with a React front end and Cloudflare Workers backend
+- API and data-layer design with D1 and Drizzle ORM
+- Moving existing records into a new database-backed architecture
+- Spec-driven development through OpenSpec artifacts
+- Production-oriented deployment workflow across Pages and Workers
+
+## Architecture
+
+```text
 bruno-portfolio/
 ├── frontend/              # React + Vite frontend application
 ├── workers/               # Cloudflare Workers backend (TypeScript)
-│   ├── src/              # API routes, services, middleware
-│   └── drizzle/          # Database schema & migrations
-├── data-migration/        # Migration scripts & legacy data
-└── openspec/             # Spec-Driven Development artifacts
+│   ├── src/               # API routes, services, middleware
+│   └── drizzle/           # Database schema & migrations
+├── data-migration/        # Migration scripts & source data
+└── openspec/              # Spec-driven development artifacts
 ```
 
-## 🚀 Tech Stack
+## Tech stack
 
 ### Frontend
 - React 18 + TypeScript
-- Vite (build tool)
-- TailwindCSS (styling)
+- Vite
+- Tailwind CSS
 - ESLint + Prettier
 
-### Backend (Serverless)
+### Backend
 - Cloudflare Workers
-- Cloudflare D1 (SQLite database)
+- Cloudflare D1
 - Drizzle ORM
 - RESTful API
 
-### Development
-- OpenSpec (Spec-Driven Development)
-- Git for version control
+### Development workflow
+- OpenSpec
+- GitHub Actions
 
-## 📦 Installation
+## Development
 
 ### Prerequisites
 - Node.js 18+
 - npm or yarn
-- Cloudflare Wrangler CLI (`npm install -g wrangler`)
+- Cloudflare Wrangler CLI
 
 ### Setup
+
 ```bash
-# Install dependencies for all workspaces
 npm install
 
-# Frontend development
 cd frontend
 npm run dev
 
-# Workers development (in another terminal)
-cd workers
+cd ../workers
 npm run dev
 ```
 
-## 🔧 Deployment
+## Deployment
 
-### Frontend
-Deployed to Cloudflare Pages via GitHub Actions.
+- Frontend: Cloudflare Pages via GitHub Actions
+- Backend: Cloudflare Workers
 
-### Backend
-Deploy to Cloudflare Workers:
 ```bash
 cd workers
 npx wrangler deploy
 ```
 
-## 📁 Project Structure
+## Project structure
 
 ### Frontend (`frontend/`)
 - `src/` - React components, hooks, utilities
-- `public/` - Static assets
-- `index.html` - Entry point
+- `public/` - static assets
 - `vite.config.ts` - Vite configuration
 
 ### Backend (`workers/`)
 - `src/index.ts` - Worker entry point
 - `src/routes/` - API route handlers
-- `src/services/` - Business logic
-- `src/middleware/` - Auth, CORS, validation
-- `drizzle/schema/` - Database schemas
-- `wrangler.toml` - Workers configuration
+- `src/services/` - business logic
+- `src/middleware/` - auth, CORS, validation
+- `drizzle/schema/` - database schemas
 
-### Database (`data-migration/`)
-- `db.json` - Legacy data from JSON Server
+### Data migration (`data-migration/`)
+- scripts and source data used to move existing records into the new database
 
 ### Documentation (`openspec/`)
-- `project.md` - Project context and conventions
-- `AGENTS.md` - AI assistant instructions
-- `changes/` - Change proposals
+- project context
+- change proposals
+- workflow conventions
 
-## 🛠️ Development Workflow
+## Development workflow
 
-This project uses **OpenSpec (Spec-Driven Development)**:
+This project uses a spec-driven workflow:
 
-1. **Create Proposal** - Define changes in `openspec/changes/`
-2. **Review & Approve** - Review design before implementation
-3. **Implement** - Follow approved spec
-4. **Verify** - Ensure implementation matches spec
+1. Define the change
+2. Review the design
+3. Implement against the approved spec
+4. Verify the result
 
-See `openspec/AGENTS.md` for details.
+## Development note
 
-## 📝 License
+This project was built with AI-assisted development support.  
+Architecture decisions, requirement breakdown, review, integration, and final verification were still owned by me.
+
+## License
 
 MIT
